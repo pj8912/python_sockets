@@ -14,14 +14,14 @@ class Client:
         self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.sock.connect((self.host, self.port))
 
-        i_thread = threading.Thread(target=self.send_message)
-        i_thread.daemon = True
-        i_thread.start()
+        a_thread = threading.Thread(target=self.send_message)
+        a_thread.daemon = True
+        a_thread.start()
 
         while True:
-            r_thread = threading.Thread(target=self.receive_message)
-            r_thread.start()
-            r_thread.join()
+            b_thread = threading.Thread(target=self.receive_message)
+            b_thread.start()
+            b_thread.join()
 
             data = self.receive_message()
             if not data: 
