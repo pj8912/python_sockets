@@ -51,6 +51,9 @@ class Server:
             except:
                 print("Cannot make thread connection..")
 
+    def disconnect_server(self):
+        self.sock.send("server_dead".encode('utf-8'))
+        self.sock.close()
 
 def main():
     server = Server('localhost', 9000)
@@ -61,6 +64,7 @@ def main():
          
      except KeyboardInterrupt:
          print("closing server..")
+         server.disconnect_server()
          sys.exit(0)
      except:
          print("connection error")

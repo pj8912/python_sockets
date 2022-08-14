@@ -26,6 +26,11 @@ class Client:
             data = self.receive_message()
             if not data: 
                 break
+            elif data and data.decode('utf-8') == "server_dead":
+                print("server is dead!")
+                self.sock.close()
+                sys.exit(0)
+
             else:
                 print('got server')
 
