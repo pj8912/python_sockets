@@ -12,7 +12,7 @@ class Server:
         self.sock.bind((self.host, self.port))
         self.sock.listen()
         self.clients = []
-
+        self.peers = []
         
 
     def handle(self, client, address):
@@ -23,10 +23,15 @@ class Server:
                 if message == "dead":
                     print(f"Client {str(address)} is disconnected")
                     self.clients(client)
+                    self.peers(address)
+
                     self.clients.close()
 
                 elif message == "alive":
                     print(f"Client {str(address)} is {message}")
+                    #print("All Clients: {}".format(self.clients))
+                    print("All Peers: {}".format(str(self.peers)))
+
                     if client not in self.clients:
                         self.clients.append(client)
 
@@ -42,7 +47,7 @@ class Server:
             print('New Connection: '+ str(address))
             print()
             self.clients.append(client)
-
+            self.peers.append(address)
             client.send("You are connected to the server".encode('utf-8'))
             try:
                 thread = threading.Thread(target=self.handle, args=(client,address))
@@ -64,7 +69,7 @@ def main():
          
      except KeyboardInterrupt:
          print("closing server..")
-         server.disconnect_server()
+        
          sys.exit(0)
      except:
          print("connection error")
