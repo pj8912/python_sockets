@@ -2,35 +2,42 @@ import socket
 import threading
 import sys
 
+
 class Server:
-    
+
     def __init__(self, host, port):
         self.host = host
         self.port = port
-        
+
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.sock.bind((self.host, self.port))
         self.sock.listen()
         self.clients = []
         self.peers = []
-        
 
     def handle(self, client, address):
         while True:
             try:
                 message = client.recv(1024).decode('utf-8')
-                
-                if message == "dead":
-                    print(f"Client {str(address)} is disconnected")
-                    self.clients(client)
-                    self.peers(address)
 
-                    self.clients.close()
+                if message == "dead":
+                    print('------------------------------')
+                    print(f"Client {str(address)} is disconnected")
+                    print('------------------------------')
+                    print()
+                    self.clients.remove(client)
+                    self.peers.remove(address)
+                    print("All Peers: {}".format(str(self.peers)))
+                    client.close()
 
                 elif message == "alive":
                     print(f"Client {str(address)} is {message}")
-                    #print("All Clients: {}".format(self.clients))
+                    # print("All Clients: {}".format(self.clients))
+                    print()
+                    print('------------------------------')
                     print("All Peers: {}".format(str(self.peers)))
+                    print('------------------------------')
 
                     if client not in self.clients:
                         self.clients.append(client)
@@ -45,6 +52,8 @@ class Server:
             client, address = self.sock.accept()
             print('------------------------------')
             print('New Connection: '+ str(address))
+            print('------------------------------')
+            
             print()
             self.clients.append(client)
             self.peers.append(address)
@@ -68,6 +77,7 @@ def main():
          server.receive()
          
      except KeyboardInterrupt:
+         server.disconnect_server()
          print("closing server..")
         
          sys.exit(0)

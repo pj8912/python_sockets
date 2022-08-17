@@ -23,10 +23,10 @@ class Client:
             b_thread.start()
             b_thread.join()
 
-            data = self.receive_message()
+            data = self.receive_message().decode('utf-8') 
             if not data: 
                 break
-            elif data and data.decode('utf-8') == "server_dead":
+            elif data == "server_dead":
                 print("server is dead!")
                 self.sock.close()
                 sys.exit(0)
