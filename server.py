@@ -48,6 +48,12 @@ class Server:
 
 
     def receive(self):
+        #if connections already exists close and delete connecitons
+        for c in self.clients:
+            c.close()
+        del self.clients
+        del self.peers
+        
         while True:
             client, address = self.sock.accept()
             print('------------------------------')
